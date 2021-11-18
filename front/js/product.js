@@ -118,6 +118,7 @@ function choixElementForOrder(monKanap){
     console.log(eleInLstorage);
         if(eleInLstorage){
             eleInLstorage.push(panier);
+            localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
 
         } else{
             eleInLstorage = [];
@@ -125,5 +126,8 @@ function choixElementForOrder(monKanap){
             localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
             console.log(eleInLstorage);
         }
+
+
+      window.location.href ="./cart.html";
     })  
 }
