@@ -1,4 +1,15 @@
 
+function change(){
+    let changement=document.querySelector("input");
+    changement.addEventListener("change", function(e){
+        e.preventDefault()
+        let settingPara = document.createElement("p");
+        settingPara.textContent = `Qté : ` + this.value;
+        console.log(this.value);
+        console.log(settingPara);
+
+    });    
+}
 cartPage();
 
 async function cartPage(){
@@ -13,8 +24,11 @@ async function cartPage(){
     } else{
         console.log(maData.message);
     }
- }
 
+    change();
+
+ }
+ 
  async function findElt(apiUrl){
     
     try { 
@@ -31,23 +45,27 @@ async function cartPage(){
 
 function newtab(ele){
 
+    
+
     let eleInLstorage = JSON.parse(localStorage.getItem("panierLstorage"));
     
     for (let i = 0; i < eleInLstorage.length; i++){
         
+
         if (ele._id === eleInLstorage[i].idProduit){
             eleInLstorage[i]["name"] = ele.name;
             eleInLstorage[i]["price"] = ele.price;
             eleInLstorage[i]["imageUrl"] = ele.imageUrl;
             eleInLstorage[i]["altTxt"] = ele.altTxt;
             eleInLstorage[i]["description"] = ele.description;
-
+            
             afficheCart(eleInLstorage)
+            console.table(eleInLstorage)
         }
 
-        function afficheCart (eleInLstorage){
+        function afficheCart (affichePanier){
             
-
+        
             let panier = document.querySelector("#cart__items");
 
             let articlePanier = document.createElement("article");
@@ -92,8 +110,8 @@ function newtab(ele){
             settingInput.setAttribute("name","itemQuantity");
             settingInput.setAttribute("min","1");
             settingInput.setAttribute("max","100");
-            settingInput.setAttribute("value","42");
-            settingInput.textContent = eleInLstorage[i].quantiteProduit;
+            settingInput.setAttribute("value",eleInLstorage[i].quantiteProduit )
+            
 
             let div__settings__delete = document.createElement("div");
             div__settings__delete.setAttribute("class","cart__item__content__settings__delete");
@@ -117,8 +135,13 @@ function newtab(ele){
                         div__settingsQuantity.append(settingPara,settingInput);
 
                         div__settings__delete.append(settingInput__delete);
+                        
+                      
+        }
+        
+
         }
     }   
-}
+
 
 
