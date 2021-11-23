@@ -1,15 +1,5 @@
 
-function change(){
-    let changement=document.querySelector("input");
-    changement.addEventListener("change", function(e){
-        e.preventDefault()
-        let settingPara = document.createElement("p");
-        settingPara.textContent = `Qté : ` + this.value;
-        console.log(this.value);
-        console.log(settingPara);
 
-    });    
-}
 cartPage();
 
 async function cartPage(){
@@ -25,7 +15,7 @@ async function cartPage(){
         console.log(maData.message);
     }
 
-    change();
+    
 
  }
  
@@ -103,6 +93,17 @@ function newtab(ele){
 
             let settingPara = document.createElement("p");
             settingPara.textContent = `Qté : ` + eleInLstorage[i].quantiteProduit;
+
+            if (settingPara.addEventListener){
+            let changement=document.querySelector("input");
+            changement.addEventListener("change", function(e){
+            
+        
+            settingPara.textContent = `Qté : ` + this.value;
+        
+
+    });    }
+            
 
             let settingInput = document.createElement("input");
             settingInput.setAttribute("type","number");
