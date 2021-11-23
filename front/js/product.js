@@ -84,7 +84,7 @@ function optionKanap(couleur){
 
 function priceConversion(prixCent){
 
-    let price = prixCent / 100 ;
+    let price = prixCent / 10 ;
     // faire ajout pour deux chiffre apres virgule
 
     return price
@@ -104,10 +104,9 @@ function choixElementForOrder(monKanap){
     const quantiteElt= document.querySelector("#quantity");
     const choixQuantite = quantiteElt.value;
     let panier = {
-        nomProduit : monKanap.name,
-        quantitéProduit : choixQuantite,
-        couleurProduit : choixColors,
-        prix:choixQuantite * priceConversion (monKanap.price),
+        idProduit: monKanap._id,
+        quantiteProduit: choixQuantite,
+        couleurProduit: choixColors
     };
 
     console.log(panier);
@@ -128,6 +127,5 @@ function choixElementForOrder(monKanap){
         }
 
 
-      window.location.href ="./cart.html";
     })  
 }
