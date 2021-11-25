@@ -6,19 +6,19 @@ function cartPage(){
 
     let eleInLstorage = JSON.parse(localStorage.getItem("panierLstorage"));
     eleInLstorage.map(produit => { 
-        eleInLstorage__itére(produit);
+        eleInLstorage__itere(produit);
         console.table(produit)
     });
 
-    async function eleInLstorage__itére(eleInLstorage__itére){
+    async function eleInLstorage__itere(eleInLstorage__itere){
         
 
-        let apiUrl = `http://localhost:3000/api/products/`+ eleInLstorage__itére.idProduit ;
+        let apiUrl = `http://localhost:3000/api/products/`+ eleInLstorage__itere.idProduit ;
         const maData = await findElt(apiUrl);
         if("undefined"===typeof(maData.error)){
             delete maData.colors;
-            maData["quantite"] = eleInLstorage__itére.quantiteProduit;
-            maData["couleur"] = eleInLstorage__itére.couleurProduit;
+            maData["quantite"] = eleInLstorage__itere.quantiteProduit;
+            maData["couleur"] = eleInLstorage__itere.couleurProduit;
             console.table(maData);
             afficheCart(maData);
         
@@ -28,7 +28,7 @@ function cartPage(){
 
     }
 
-console.log(articlePanier)
+
 
  async function findElt(apiUrl){
     
@@ -47,12 +47,11 @@ console.log(articlePanier)
 }
 
     function afficheCart (maData){
-        
-    
+
         let panier = document.querySelector("#cart__items");
 
         let articlePanier = document.createElement("article");
-        articlePanier.setAttribute("class",".cart__items");
+        articlePanier.setAttribute("class","cart__item");
         articlePanier.setAttribute("data-id",maData._id);
         articlePanier.setAttribute("data-color",maData.couleur);
 
@@ -95,6 +94,12 @@ console.log(articlePanier)
         settingInput.setAttribute("max","100");
         settingInput.setAttribute("value",maData.quantite )
         
+        
+
+
+
+
+
 
         let div__settings__delete = document.createElement("div");
         div__settings__delete.setAttribute("class","cart__item__content__settings__delete");
@@ -119,8 +124,65 @@ console.log(articlePanier)
 
                     div__settings__delete.append(settingInput__delete);
                     
-                    
+
+
+change(settingInput,settingPara, `Qté : `)
+
+function change(elementEcoute,elementDOM__modif,nameValeurAffi ){
+
+    elementEcoute.addEventListener("change", function (e) {
+
+    const target = e.target;
+    console.log(target)
+
+    if (target.matches("input")){
+        let newValue=this.value;
+        elementDOM__modif.textContent = nameValeurAffi  + newValue;
+        settingInput.setAttribute("value", newValue )
     }
+        
+})}
+
+                    
+
+deleteVal (settingInput__delete,settingPara, `Aucun ` + maData.name + ` en commande`);
+
+function deleteVal( elementEcoute,elementDOM__modif,valeurAffi ){
+
+    elementEcoute.addEventListener("click", function(e){
+
+        const target = e.target;
+        console.log(target);
+    
+        if (target.matches("p")){
+            elementDOM__modif.textContent = valeurAffi;
+            settingInput.setAttribute("value", 0);
+        }
+        
+    })
+}
+
+tot()
+
+function tot(){
+
+    let total = document.querySelectorAll(".cart__item__content__description>p:nth-child(3)");
+    console.table(total);
+    let newtab =Array.from(total) ;
+    console.log(newtab)
+    let b =0 
+    newtab.map(function (somme){
+        b = b+newtab.innerText;
+        
+        console.log(b)
+    })
+    }
+
+    
+}
+
+
+
     
 
     

@@ -114,18 +114,36 @@ function choixElementForOrder(monKanap){
 /*------------------ location stockage-------------------------*/
 
     let eleInLstorage = JSON.parse(localStorage.getItem("panierLstorage"));
+
     console.log(eleInLstorage);
-        if(eleInLstorage){
-            eleInLstorage.push(panier);
-            localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
+        if(eleInLstorage!==null){
 
-        } else{
-            eleInLstorage = [];
-            eleInLstorage.push(panier);
+            console.log("le panier n'est pas vide")
+
+            la__condition__est = false;
+
+            eleInLstorage.forEach(function boucle(elem__it){
+                if (elem__it.idProduit == panier.idProduit && elem__it.couleurProduit == panier.couleurProduit){
+                    elem__it.quantiteProduit = parseInt(panier.quantiteProduit) + parseInt(elem__it.quantiteProduit) ;
+
+                    console.log(typeof elem__it.quantiteProduit)
+                    la__condition__est =true;
+                   console.log(`Des element identique dans le panier : ` + la__condition__est )
+                }
+                });
+                
+                if (!la__condition__est) {
+                    eleInLstorage.push(panier);
+                    console.log(eleInLstorage)
+                }
+            
             localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
-            console.log(eleInLstorage);
+        }   else{
+                console.log("le panier est vide")
+                eleInLstorage = [];
+                eleInLstorage.push(panier);
+                localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
+                console.log(eleInLstorage);
         }
-
-
     })  
 }
