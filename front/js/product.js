@@ -106,11 +106,11 @@ function choixElementForOrder(monKanap){
     let panier = {
         idProduit: monKanap._id,
         quantiteProduit: choixQuantite,
-        couleurProduit: choixColors
+        couleurProduit: choixColors,
+        prixUnit : monKanap.price 
     };
 
-    console.log(panier);
-
+    
 /*------------------ location stockage-------------------------*/
 
     let eleInLstorage = JSON.parse(localStorage.getItem("panierLstorage"));
