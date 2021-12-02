@@ -202,21 +202,27 @@ function prixTotal(){
     totalPrice.textContent = prix;
 }
 /* ------------------------formulaire---------------------------------------------------*/
-//document.getElementById("order").addEventListener("submit", function(e){
- //e.preventDefault()
-function formulaire(){
+document.getElementById("order").addEventListener("submit", function(e){
+    e.preventDefault()
 
+formulaire()
+});
+function formulaire(){
+    
     let inputs = document.querySelectorAll( "form input");
     console.log(inputs);
 
     let formInfo = [];
     for (let i = 0; i<inputs.length; i++){
         console.log(typeof inputs[i].name)
-            formInfo.inputs[i].name = "essai"
-    }
-return formInfo
-}
-//localStorage.setItem("formulaire",JSON.stringify(formInfo));
+            let nom = inputs[i].name
+            console.log(nom)
+            console.log (`${nom}`)
 
-console.log(formulaire())
-//});
+     formInfo[`${nom}`]= inputs[i].name.value;
+      
+    }
+console.log(formInfo)
+
+localStorage.setItem("formulaire",JSON.stringify(formInfo));
+}
