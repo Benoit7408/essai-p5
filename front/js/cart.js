@@ -202,11 +202,11 @@ function prixTotal(){
     totalPrice.textContent = prix;
 }
 /* ------------------------formulaire---------------------------------------------------*/
-document.getElementById("order").addEventListener("submit", function(e){
-    e.preventDefault()
-
-formulaire()
+document.getElementById("order").addEventListener("click", function(e){
+    
+    formulaire()
 });
+
 function formulaire(){
     
     let inputs = document.querySelectorAll( "form input");
@@ -215,14 +215,9 @@ function formulaire(){
     let formInfo = [];
     for (let i = 0; i<inputs.length; i++){
         console.log(typeof inputs[i].name)
-            let nom = inputs[i].name
-            console.log(nom)
-            console.log (`${nom}`)
-
-     formInfo[`${nom}`]= inputs[i].name.value;
-      
+        let nom = inputs[i].name
+        formInfo[`${nom}`]= inputs[i].value;
     }
 console.log(formInfo)
 
-localStorage.setItem("formulaire",JSON.stringify(formInfo));
 }
