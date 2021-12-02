@@ -2,7 +2,7 @@
 cartPage();
 
 function cartPage(){
-
+    
     let eleInLstorage = getStorage();
     if (eleInLstorage != null){
         console.log(eleInLstorage)
@@ -17,7 +17,7 @@ function cartPage(){
         totalArticles.textContent= "0";
         let totalPrice = document.querySelector("#totalPrice");
         totalPrice.textContent="0";
-        panierVide.textContent= "Vous n'avez aucun articles dans le panier";
+        panierVide.textContent= "Vous n'avez aucun articles dans le panier.";
         panier.append(panierVide);
     }
 
@@ -196,9 +196,27 @@ function prixTotal(){
     console.log(tabElmToChange);
     let prix = 0;
     for (let i = 0; i< tabElmToChange.length; i++){
-        prix +=
         prix = tabElmToChange[i].quantiteProduit * tabElmToChange[i].prixUnit;
     }
     let totalPrice = document.querySelector("#totalPrice"); 
     totalPrice.textContent = prix;
 }
+/* ------------------------formulaire---------------------------------------------------*/
+//document.getElementById("order").addEventListener("submit", function(e){
+ //e.preventDefault()
+function formulaire(){
+
+    let inputs = document.querySelectorAll( "form input");
+    console.log(inputs);
+
+    let formInfo = [];
+    for (let i = 0; i<inputs.length; i++){
+        console.log(typeof inputs[i].name)
+            formInfo.inputs[i].name = "essai"
+    }
+return formInfo
+}
+//localStorage.setItem("formulaire",JSON.stringify(formInfo));
+
+console.log(formulaire())
+//});
