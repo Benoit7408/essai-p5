@@ -1,4 +1,5 @@
 
+
 cartPage();
 
 function cartPage(){
@@ -31,7 +32,8 @@ function cartPage(){
             maData["couleur"] = eleInLstorage__itere.couleurProduit;
             console.table(maData);
             afficheCart(maData);
-        
+            
+            
         } else{
             console.log(maData.message);
         }
@@ -108,9 +110,14 @@ function afficheCart (maData){
     settingInput.setAttribute("min","1");
     settingInput.setAttribute("max","100");
     settingInput.setAttribute("value",maData.quantite);
+    settingInput.unitPrice= maData.price;
+    settingInput.quantite= maData.quantite;
     settingInput.addEventListener("change", function(e){
         changeQty(e,settingInput,maData._id,maData.couleur);
         });
+
+        
+     
         
     let div__settings__delete = document.createElement("div");
     div__settings__delete.setAttribute("class","cart__item__content__settings__delete");
@@ -134,9 +141,8 @@ function afficheCart (maData){
     div__settings.append(div__settingsQuantity,div__settings__delete);
     div__settingsQuantity.append(settingPara,settingInput);
     div__settings__delete.append(settingInput__delete);
-
     nombreArticle()
-    prixTotal()
+    prixTotal(settingInput.unitPrice,settingInput.quantite)
 }
 
 function changeQty( e ,itemQuantity,idProduct,couleurProduct){
@@ -160,7 +166,8 @@ function changeQty( e ,itemQuantity,idProduct,couleurProduct){
     }
 
     nombreArticle();
-    prixTotal();
+   // prixTotal();
+   
 }
 
 function del(produit,couleur){
@@ -171,7 +178,7 @@ function del(produit,couleur){
         if (produit != tabElmToChange[i].idProduit || couleur != tabElmToChange[i].couleurProduit){
             
             newOne.push(tabElmToChange[i])
-            console.log(newOne)
+            console.log(typeof newOne)
         }
     localStorage.setItem("panierLstorage",JSON.stringify(newOne));        
     }
@@ -190,34 +197,108 @@ function nombreArticle(){
     totalArticles.textContent = NbArticles;
 }
    
-function prixTotal(){
+function prixTotal(prixUnitaire,quantite){
     
-    let tabElmToChange = getStorage();
-    console.log(tabElmToChange);
-    let prix = 0;
-    for (let i = 0; i< tabElmToChange.length; i++){
-        prix = tabElmToChange[i].quantiteProduit * tabElmToChange[i].prixUnit;
+    let quantity = document.querySelectorAll(".itemQuantity");
+
+    
+    
+  
+    for (let i = 0; i<quantity.length; i++){
+        prix +=
+        console.log(prix)
+        console.log(parseInt(quantity[i].value))
+        console.log(prixUnitaire)
+        prix = parseInt(quantity[i].value) * prixUnitaire;
+        console.log(prix)
+        
     }
+    
     let totalPrice = document.querySelector("#totalPrice"); 
-    totalPrice.textContent = prix;
+    totalPrice.textContent = autre;
+ 
 }
+
 /* ------------------------formulaire---------------------------------------------------*/
 document.getElementById("order").addEventListener("click", function(e){
-    
-    formulaire()
+    e.preventDefault()
+    let contact = formulaire()
+    envoiFormulaire(contact)
+
 });
 
 function formulaire(){
-    
+
     let inputs = document.querySelectorAll( "form input");
     console.log(inputs);
 
-    let formInfo = [];
-    for (let i = 0; i<inputs.length; i++){
-        console.log(typeof inputs[i].name)
+    let formInfo = {};
+    const regex = /^[-a-zéèîç'ï]{2,20}$|^[-A-ZÉÈÎÏ']{2,20}$|^[A-ZÉÈÏ'][-a-zéèîï]*$/
+    const regexAdresse = /^[-a-z0-9éèçàî'"]{5,20}$|^[-A-Z0-9ZÉÈÏ''"]{5,20}$|^[A-Z0-9ZÉÈÏ''"][-a-zéèîï]*$/
+    const regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$/
+    var allData = true
+    for (let i = 0; i<5; i++){
+        
+        if(inputs[i].value){
+            let nom = inputs[i].name +"ErrorMsg"
+            let noError = inputs[i].name +"ErrorMsg"
+            
+            if((!regex.test(inputs[i].value)) && ((inputs[i].name === "firstName") || (inputs[i].name === "lastName") || (inputs[i].name === "city")) ){
+                document.getElementById(`${nom}`).textContent = "une erreur de sasie"
+                allData = false
+                break
+            }else{
+                document.getElementById(`${noError}`).textContent = " "
+            } 
+            if((!regexAdresse.test(inputs[i].value)) && inputs[i].name === "address"){
+                document.getElementById(`${nom}`).textContent = "une erreur de sasie"
+                allData = false
+                break
+            }else{
+                document.getElementById(`${noError}`).textContent = " "
+            }
+            
+            if((!regexEmail.test(inputs[i].value)) && inputs[i].name === "email"){
+                document.getElementById(`${nom}`).textContent = "une erreur de sasie"
+                allData = false
+                break
+            }else{
+                document.getElementById(`${noError}`).textContent = " "
+            }
+            
+        }else{
+            let nom = inputs[i].name +"ErrorMsg"
+            document.getElementById(`${nom}`).textContent = "remplir les element"
+            break
+        }
         let nom = inputs[i].name
         formInfo[`${nom}`]= inputs[i].value;
-    }
-console.log(formInfo)
-
+    }  
+        
+    console.log(allData)
+    if (allData === true){
+        return formInfo
+    }      
+        
+   
+    
+    
+   }
+    
+    function envoiFormulaire(info){
+        
+        localStorage.setItem("contact", JSON.stringify(info));
+        let idProduct=JSON.parse(localStorage.getItem("panierLstorage"))
+       
+        let product=[]
+        for (let i=0; i<idProduct.length; i++){
+           product.push(idProduct[i].idProduit)
+        }
+        console.log (product)
+   
+        const envoiFormulaire = {
+        contact : info,
+        products : product
+   }
+    console.log(envoiFormulaire)
 }
