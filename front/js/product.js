@@ -1,4 +1,10 @@
-principaleProduct();
+window.addEventListener("DOMContentLoaded", (event) => {
+    principaleProduct();
+  });
+
+
+
+
 
 
 /*------------------ fonction principale qui utilise le resultat des autres fonctions -------------------------*/
@@ -61,7 +67,7 @@ function afficheOneElement(monKanap){
     nameProduct.textContent= monKanap.name;
 
     let priceProduct = document.getElementById("price");
-    priceProduct.textContent= priceConversion(monKanap.price);
+    priceProduct.textContent= monKanap.price;
 
     let descriptProduct = document.getElementById("description");
     descriptProduct.textContent= monKanap.description;
@@ -80,16 +86,9 @@ function optionKanap(couleur){
    selectOption.append(newOptionColors);
 }
 
-/*------------------ fonction pour l'affichage de prix en euros-------------------------*/
 
-function priceConversion(prixCent){
 
-    let price = prixCent / 10 ;
-    // faire ajout pour deux chiffre apres virgule
 
-    return price
-
-}
 
 
 /*------------------ gestion du pannier-------------------------*/
@@ -98,18 +97,23 @@ function choixElementForOrder(monKanap){
 
     const monPanier = document.querySelector("#addToCart");
     monPanier.addEventListener("click",function (){
+
+        
     
     const optionColors = document.querySelector("#colors");
     const choixColors = optionColors.value;
     const quantiteElt= document.querySelector("#quantity");
     const choixQuantite = quantiteElt.value;
+    if (( choixQuantite <= 0) || (choixColors ==="")){
+        window.alert ("vous devez choisir une quantité  et une couleur");    
+    }
+
     let panier = {
         idProduit: monKanap._id,
         quantiteProduit: choixQuantite,
         couleurProduit: choixColors,
-        prixUnit : monKanap.price 
     };
-
+    
     
 /*------------------ location stockage-------------------------*/
 

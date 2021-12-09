@@ -1,6 +1,7 @@
+window.addEventListener("DOMContentLoaded", (event) => {
+    cartPage();
+  });
 
-
-cartPage();
 
 function cartPage(){
     
@@ -198,19 +199,16 @@ function nombreArticle(){
 }
    
 function prixTotal(prixUnitaire,quantite){
-    
+    let prix = 0
     let quantity = document.querySelectorAll(".itemQuantity");
-
-    
-    
   
     for (let i = 0; i<quantity.length; i++){
         prix +=
-        console.log(prix)
-        console.log(parseInt(quantity[i].value))
-        console.log(prixUnitaire)
+        console.log(prix);
+        console.log(parseInt(quantity[i].value));
+        console.log(prixUnitaire);
         prix = parseInt(quantity[i].value) * prixUnitaire;
-        console.log(prix)
+        console.log(prix);
         
     }
     
@@ -221,9 +219,9 @@ function prixTotal(prixUnitaire,quantite){
 
 /* ------------------------formulaire---------------------------------------------------*/
 document.getElementById("order").addEventListener("click", function(e){
-    e.preventDefault()
+    e.preventDefault();
     let contact = formulaire()
-    envoiFormulaire(contact)
+    envoiFormulaire(contact);
 
 });
 
@@ -233,49 +231,49 @@ function formulaire(){
     console.log(inputs);
 
     let formInfo = {};
-    const regex = /^[-a-zéèîç'ï]{2,20}$|^[-A-ZÉÈÎÏ']{2,20}$|^[A-ZÉÈÏ'][-a-zéèîï]*$/
-    const regexAdresse = /^[-a-z0-9éèçàî'"]{5,20}$|^[-A-Z0-9ZÉÈÏ''"]{5,20}$|^[A-Z0-9ZÉÈÏ''"][-a-zéèîï]*$/
-    const regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$/
-    var allData = true
+    const regex = /^[-a-zéèîç'ï]{2,20}$|^[-A-ZÉÈÎÏ']{2,20}$|^[A-ZÉÈÏ'][-a-zéèîï]*$/;
+    const regexAdresse = /^[-a-z0-9éèçàî'"]{5,20}$|^[-A-Z0-9ZÉÈÏ''"]{5,20}$|^[A-Z0-9ZÉÈÏ''"][-a-zéèîï]*$/;
+    const regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$/;
+    var allData = true;
     for (let i = 0; i<5; i++){
         
         if(inputs[i].value){
-            let nom = inputs[i].name +"ErrorMsg"
-            let noError = inputs[i].name +"ErrorMsg"
+            let nom = inputs[i].name +"ErrorMsg";
+            let noError = inputs[i].name +"ErrorMsg";
             
             if((!regex.test(inputs[i].value)) && ((inputs[i].name === "firstName") || (inputs[i].name === "lastName") || (inputs[i].name === "city")) ){
-                document.getElementById(`${nom}`).textContent = "une erreur de sasie"
-                allData = false
-                break
+                document.getElementById(`${nom}`).textContent = "une erreur de sasie";
+                allData = false;
+                break;
             }else{
-                document.getElementById(`${noError}`).textContent = " "
+                document.getElementById(`${noError}`).textContent = " ";
             } 
             if((!regexAdresse.test(inputs[i].value)) && inputs[i].name === "address"){
-                document.getElementById(`${nom}`).textContent = "une erreur de sasie"
-                allData = false
-                break
+                document.getElementById(`${nom}`).textContent = "une erreur de sasie";
+                allData = false;
+                break;
             }else{
-                document.getElementById(`${noError}`).textContent = " "
+                document.getElementById(`${noError}`).textContent = " ";
             }
             
             if((!regexEmail.test(inputs[i].value)) && inputs[i].name === "email"){
-                document.getElementById(`${nom}`).textContent = "une erreur de sasie"
-                allData = false
-                break
+                document.getElementById(`${nom}`).textContent = "une erreur de sasie";
+                allData = false;
+                break;
             }else{
-                document.getElementById(`${noError}`).textContent = " "
+                document.getElementById(`${noError}`).textContent = " ";
             }
             
         }else{
-            let nom = inputs[i].name +"ErrorMsg"
-            document.getElementById(`${nom}`).textContent = "remplir les element"
-            break
+            let nom = inputs[i].name +"ErrorMsg";
+            document.getElementById(`${nom}`).textContent = "remplir les element";
+            break;
         }
-        let nom = inputs[i].name
+        let nom = inputs[i].name;
         formInfo[`${nom}`]= inputs[i].value;
     }  
         
-    console.log(allData)
+    console.log(allData);
     if (allData === true){
         return formInfo
     }      

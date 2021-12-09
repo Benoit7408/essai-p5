@@ -1,5 +1,8 @@
- 
-principale();
+window.addEventListener("DOMContentLoaded", (event) => {
+    principale();
+  });
+
+
 
  async function principale(){
     let apiUrl = "http://localhost:3000/api/products";
