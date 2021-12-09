@@ -130,8 +130,8 @@ function afficheCart (maData){
        
         let produit = maData._id;
         let couleur = maData.couleur;
-        del(produit,couleur)
-      // location.reload()
+        del(produit,couleur);
+        location.reload();
     });
 
     panier.append(articlePanier);
@@ -142,7 +142,7 @@ function afficheCart (maData){
     div__settings.append(div__settingsQuantity,div__settings__delete);
     div__settingsQuantity.append(settingPara,settingInput);
     div__settings__delete.append(settingInput__delete);
-    nombreArticle()
+    nombreArticle();
    // prixTotal(settingInput.unitPrice,settingInput.quantite)
 }
 
@@ -151,7 +151,7 @@ function changeQty( e ,itemQuantity,idProduct,couleurProduct){
     if (isNaN(itemQuantity.value) || itemQuantity.value <= 0){
         itemQuantity.value = 1
     }
-    let tabElmToChange = getStorage()
+    let tabElmToChange = getStorage();
     let produit = idProduct;
     let couleur = couleurProduct;
 
@@ -174,18 +174,18 @@ function changeQty( e ,itemQuantity,idProduct,couleurProduct){
 
 function del(produit,couleur){
         
-    let newOne = []
-    let tabElmToChange = getStorage()
+    let newOne = [];
+    let tabElmToChange = getStorage();
     for (let i = 0; i < tabElmToChange.length; i++){
         if (produit != tabElmToChange[i].idProduit || couleur != tabElmToChange[i].couleurProduit){
-            
-            newOne.push(tabElmToChange[i])
+            newOne.push(tabElmToChange[i]);
         }
-    localStorage.setItem("panierLstorage",JSON.stringify(newOne));
+        localStorage.setItem("panierLstorage",JSON.stringify(newOne));
     } 
-    if(getStorage() == []) {
-        console.log(essai)
-       localStorage.removeItem(panierLstorage);
+    console.log(getStorage());
+    if(getStorage().length == 0) {
+        console.log("essai");
+        localStorage.removeItem("panierLstorage");
     }
 }
 
