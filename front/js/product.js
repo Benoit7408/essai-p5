@@ -144,6 +144,7 @@ function lStorage(panier){
                 if (!la__condition__est) {
                     eleInLstorage.push(panier);
                     console.log(eleInLstorage)
+                    window.alert ("Votre produit est ajouté au panier");
                 }
             
             localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
@@ -153,7 +154,8 @@ function lStorage(panier){
                 eleInLstorage.push(panier);
                 localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
                 console.log(eleInLstorage);
+                window.alert ("Votre produit est ajouté au panier");
         }
-        window.alert ("Votre produit est ajouté au panier");
+        
     } 
 }

@@ -180,14 +180,12 @@ function del(produit,couleur){
         if (produit != tabElmToChange[i].idProduit || couleur != tabElmToChange[i].couleurProduit){
             
             newOne.push(tabElmToChange[i])
-            
         }
-    localStorage.setItem("panierLstorage",JSON.stringify(newOne)); 
+    localStorage.setItem("panierLstorage",JSON.stringify(newOne));
+    } 
     if(getStorage() == []) {
         console.log(essai)
        localStorage.removeItem(panierLstorage);
-    } 
-    
     }
 }
 
