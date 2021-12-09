@@ -131,7 +131,7 @@ function afficheCart (maData){
         let produit = maData._id;
         let couleur = maData.couleur;
         del(produit,couleur)
-        location.reload()
+      // location.reload()
     });
 
     panier.append(articlePanier);
@@ -143,7 +143,7 @@ function afficheCart (maData){
     div__settingsQuantity.append(settingPara,settingInput);
     div__settings__delete.append(settingInput__delete);
     nombreArticle()
-    prixTotal(settingInput.unitPrice,settingInput.quantite)
+   // prixTotal(settingInput.unitPrice,settingInput.quantite)
 }
 
 function changeQty( e ,itemQuantity,idProduct,couleurProduct){
@@ -163,6 +163,7 @@ function changeQty( e ,itemQuantity,idProduct,couleurProduct){
                 console.log(tabElmToChange[i].quantiteProduit);
                 console.table(tabElmToChange); 
         }
+        console.log(tabElmToChange)
         let eleInLstorage = localStorage.setItem("panierLstorage",JSON.stringify(tabElmToChange));
     }
 
@@ -179,9 +180,14 @@ function del(produit,couleur){
         if (produit != tabElmToChange[i].idProduit || couleur != tabElmToChange[i].couleurProduit){
             
             newOne.push(tabElmToChange[i])
-            console.log(typeof newOne)
+            
         }
-    localStorage.setItem("panierLstorage",JSON.stringify(newOne));        
+    localStorage.setItem("panierLstorage",JSON.stringify(newOne)); 
+    if(getStorage() == []) {
+        console.log(essai)
+       localStorage.removeItem(panierLstorage);
+    } 
+    
     }
 }
 
@@ -198,7 +204,7 @@ function nombreArticle(){
     totalArticles.textContent = NbArticles;
 }
    
-function prixTotal(prixUnitaire,quantite){
+/*function prixTotal(prixUnitaire,quantite){
     let prix = 0
     let quantity = document.querySelectorAll(".itemQuantity");
   
@@ -215,7 +221,7 @@ function prixTotal(prixUnitaire,quantite){
     let totalPrice = document.querySelector("#totalPrice"); 
     totalPrice.textContent = autre;
  
-}
+}*/
 
 /* ------------------------formulaire---------------------------------------------------*/
 document.getElementById("order").addEventListener("click", function(e){
@@ -286,17 +292,17 @@ function formulaire(){
     function envoiFormulaire(info){
         
         localStorage.setItem("contact", JSON.stringify(info));
-        let idProduct=JSON.parse(localStorage.getItem("panierLstorage"))
+        let idProduct=JSON.parse(localStorage.getItem("panierLstorage"));
        
         let product=[]
         for (let i=0; i<idProduct.length; i++){
-           product.push(idProduct[i].idProduit)
+           product.push(idProduct[i].idProduit);
         }
         console.log (product)
    
         const envoiFormulaire = {
         contact : info,
         products : product
-   }
-    console.log(envoiFormulaire)
-}
+    }
+    console.log(envoiFormulaire);
+    }

@@ -112,10 +112,15 @@ function choixElementForOrder(monKanap){
         idProduit: monKanap._id,
         quantiteProduit: choixQuantite,
         couleurProduit: choixColors,
-    };
+    }
+        lStorage(panier)
+    });
     
-    
+
+
 /*------------------ location stockage-------------------------*/
+
+function lStorage(panier){
 
     let eleInLstorage = JSON.parse(localStorage.getItem("panierLstorage"));
 
@@ -149,5 +154,6 @@ function choixElementForOrder(monKanap){
                 localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
                 console.log(eleInLstorage);
         }
-    })  
+        window.alert ("Votre produit est ajouté au panier");
+    } 
 }
