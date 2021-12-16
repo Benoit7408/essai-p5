@@ -2,11 +2,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
     principaleProduct();
   });
 
-
-
-
-
-
 /*------------------ fonction principale qui utilise le resultat des autres fonctions -------------------------*/
 async function principaleProduct(){
     const myProductUrl = `http://localhost:3000/api/products/` + findEltUrl("id");
@@ -20,15 +15,11 @@ async function principaleProduct(){
             monKanap.colors.map(couleur => { 
                 optionKanap(couleur);
             });
-            
-    }
-        
-     else{
+    }else{
         console.log(monKanap.message);
     }
     console.table(monKanap.colors);
     choixElementForOrder(monKanap);
-    
   
 }
 /*------------------ fonction qui va chercher l'id -------------------------*/
@@ -63,6 +54,7 @@ function afficheOneElement(monKanap){
 
     let imgProduct = document.createElement("img");
     imgProduct.src = monKanap.imageUrl;
+    imgProduct.setAttribute("alt",monKanap.altTxt)
     let nameProduct = document.getElementById("title");
     nameProduct.textContent= monKanap.name;
 
@@ -71,11 +63,25 @@ function afficheOneElement(monKanap){
 
     let descriptProduct = document.getElementById("description");
     descriptProduct.textContent= monKanap.description;
+    
+    let quantiteElt = document.querySelector("#quantity");
+    quantiteElt.setAttribute("value", quantiteElt.min) 
 
-    oneProduct.append(imgProduct);
+    oneProduct.append(imgProduct); 
+    defaultQChange()
     
 }
 
+function defaultQChange(){
+    let quantiteElt = document.querySelector("#quantity");
+        quantiteElt.addEventListener("change",function (){
+        console.log(typeof quantiteElt.value)
+        if (parseInt(quantiteElt.value) < 0 ){
+            quantiteElt.value = quantiteElt.min
+        }
+        quantiteElt.setAttribute("value", quantiteElt.value) 
+        });
+    }
 /*------------------ fonction pour la proposition des options de couleur-------------------------*/
 
 function optionKanap(couleur){
@@ -85,11 +91,6 @@ function optionKanap(couleur){
    let selectOption = document.querySelector("select");
    selectOption.append(newOptionColors);
 }
-
-
-
-
-
 
 /*------------------ gestion du pannier-------------------------*/
 

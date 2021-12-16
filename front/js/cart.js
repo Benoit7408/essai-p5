@@ -1,6 +1,23 @@
 window.addEventListener("DOMContentLoaded", (event) => {
-    cartPage();
+   choixPage();
   });
+
+/* ------------------------fonction pour choisir la page cart ou confirmation de commande---------------------------------------------------*/
+function choixPage(){
+    let params = new URLSearchParams(document.location.search);
+    let urlId = params.get("orderId");
+    console.log(urlId);
+    if(urlId !== null){
+        localStorage.clear();
+        const orderConfirmation = document.getElementById("orderId");
+        orderConfirmation.textContent = urlId;
+        return false;
+    }
+    else{
+        cartPage();
+        gestionFormulaire();
+    }
+}
 
 
 function cartPage(){
@@ -56,14 +73,14 @@ function cartPage(){
   }
 
 }
-
+/* ------------------------Recupére informations du local storage---------------------------------------------------*/
 function getStorage(){
 
     let getStorage = JSON.parse(localStorage.getItem("panierLstorage"));
         
         return getStorage;
 }
-
+/* ------------------------fonction d'affichage des articles du panier---------------------------------------------------*/
 function afficheCart (maData){
 
     let panier = document.querySelector("#cart__items");
@@ -143,14 +160,16 @@ function afficheCart (maData){
     div__settingsQuantity.append(settingPara,settingInput);
     div__settings__delete.append(settingInput__delete);
     nombreArticle();
-   // prixTotal(settingInput.unitPrice,settingInput.quantite)
+    prixTotal() 
 }
-
+/* -------------------Fonction pour changer la quantité d'un article du panier---------------------------------------------------*/
 function changeQty( e ,itemQuantity,idProduct,couleurProduct){
     
     if (isNaN(itemQuantity.value) || itemQuantity.value <= 0){
-        itemQuantity.value = 1
+        itemQuantity.value = itemQuantity.min
+        itemQuantity.setAttribute("value", itemQuantity.min) 
     }
+    
     let tabElmToChange = getStorage();
     let produit = idProduct;
     let couleur = couleurProduct;
@@ -159,19 +178,21 @@ function changeQty( e ,itemQuantity,idProduct,couleurProduct){
         if (produit === tabElmToChange[i].idProduit && couleur === tabElmToChange[i].couleurProduit){
             
                 tabElmToChange[i].quantiteProduit= itemQuantity.value;
+                
                 console.log(itemQuantity.value);
                 console.log(tabElmToChange[i].quantiteProduit);
                 console.table(tabElmToChange); 
         }
+        itemQuantity.setAttribute("value", itemQuantity.value)
         console.log(tabElmToChange)
         let eleInLstorage = localStorage.setItem("panierLstorage",JSON.stringify(tabElmToChange));
     }
 
     nombreArticle();
-   // prixTotal();
+    prixTotal();
    
 }
-
+/* ------------------------fonction de supression d'article du panier---------------------------------------------------*/
 function del(produit,couleur){
         
     let newOne = [];
@@ -188,7 +209,7 @@ function del(produit,couleur){
         localStorage.removeItem("panierLstorage");
     }
 }
-
+/* ------------------------Calcul du nombre d'article total dans le panier---------------------------------------------------*/
 function nombreArticle(){
     
     let articles = document.querySelectorAll(".itemQuantity");
@@ -201,106 +222,119 @@ function nombreArticle(){
     let totalArticles = document.querySelector("#totalQuantity") 
     totalArticles.textContent = NbArticles;
 }
-   
-/*function prixTotal(prixUnitaire,quantite){
-    let prix = 0
+/* ------------------------fonction de calcul de prix Total du panier---------------------------------------------------*/
+function prixTotal(){
+    
+    let prix = 0;
     let quantity = document.querySelectorAll(".itemQuantity");
-  
-    for (let i = 0; i<quantity.length; i++){
-        prix +=
-        console.log(prix);
-        console.log(parseInt(quantity[i].value));
-        console.log(prixUnitaire);
-        prix = parseInt(quantity[i].value) * prixUnitaire;
-        console.log(prix);
-        
+    for (let i = 0 ; i<quantity.length; i++){
+        prix += parseInt(quantity[i].value) * quantity[i].unitPrice;
     }
     
     let totalPrice = document.querySelector("#totalPrice"); 
-    totalPrice.textContent = autre;
- 
-}*/
+    totalPrice.textContent = prix;
+    }
 
-/* ------------------------formulaire---------------------------------------------------*/
+
+/* ------------------------Gestion du formulaire---------------------------------------------------*/
+function gestionFormulaire(){
+
 document.getElementById("order").addEventListener("click", function(e){
     e.preventDefault();
     let contact = formulaire()
-    envoiFormulaire(contact);
+    let eFormulaire = envoiFormulaire(contact);
+    findOrderId(eFormulaire)
+    });
+}
 
-});
-
+/* ------------------------Verification informations formulaire---------------------------------------------------*/
 function formulaire(){
 
     let inputs = document.querySelectorAll( "form input");
-    console.log(inputs);
 
     let formInfo = {};
-    const regex = /^[-a-zéèîç'ï]{2,20}$|^[-A-ZÉÈÎÏ']{2,20}$|^[A-ZÉÈÏ'][-a-zéèîï]*$/;
-    const regexAdresse = /^[-a-z0-9éèçàî'"]{5,20}$|^[-A-Z0-9ZÉÈÏ''"]{5,20}$|^[A-Z0-9ZÉÈÏ''"][-a-zéèîï]*$/;
+    const regex = /^[-a-zA-ZàâäçéèêëîïôöùûüÿæœÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃńǸǹN̂n̂N̈n̈ŅņNŇňṄṅNṆṇN̄n̄NÑñ.'"._\s]+$/
+    const regexAdresse = /[-a-z0-9àâäçéèêëîïôöùûüÿæœńǹn̂n̈ņňṅṇn̄ñ'"]{5,50}$|^[-A-Z0-9ÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃN̂N̈ŅNŇṄNṆN̄NÑ'"]{5,50}$|^[-A-Z0-9ÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃǸN̂N̈ŅNŇṄNṆN̄NÑ'"][-a-zàâäçéèêëîïôöùûüÿæœńǹn̂n̈ņňṅṇn̄ñ'"]*$/;
     const regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$/;
     var allData = true;
     for (let i = 0; i<5; i++){
         
         if(inputs[i].value){
-            let nom = inputs[i].name +"ErrorMsg";
+            let nomInput = inputs[i].name +"ErrorMsg";
             let noError = inputs[i].name +"ErrorMsg";
             
             if((!regex.test(inputs[i].value)) && ((inputs[i].name === "firstName") || (inputs[i].name === "lastName") || (inputs[i].name === "city")) ){
-                document.getElementById(`${nom}`).textContent = "une erreur de sasie";
+                document.getElementById(nomInput).textContent = "une erreur de sasie";
                 allData = false;
                 break;
             }else{
-                document.getElementById(`${noError}`).textContent = " ";
+                document.getElementById(noError).textContent = "";
             } 
             if((!regexAdresse.test(inputs[i].value)) && inputs[i].name === "address"){
-                document.getElementById(`${nom}`).textContent = "une erreur de sasie";
+                document.getElementById(nomInput).textContent = "une erreur de sasie";
                 allData = false;
                 break;
             }else{
-                document.getElementById(`${noError}`).textContent = " ";
+                document.getElementById(noError).textContent = "";
             }
             
             if((!regexEmail.test(inputs[i].value)) && inputs[i].name === "email"){
-                document.getElementById(`${nom}`).textContent = "une erreur de sasie";
+                document.getElementById(nomInput).textContent = "une erreur de sasie";
                 allData = false;
                 break;
             }else{
-                document.getElementById(`${noError}`).textContent = " ";
+                document.getElementById(noError).textContent = "";
             }
             
         }else{
-            let nom = inputs[i].name +"ErrorMsg";
-            document.getElementById(`${nom}`).textContent = "remplir les element";
+            let nomInput = inputs[i].name +"ErrorMsg";
+            document.getElementById(nomInput).textContent = "remplir les element";
             break;
         }
-        let nom = inputs[i].name;
-        formInfo[`${nom}`]= inputs[i].value;
+        let nomInput = inputs[i].name;
+        formInfo[nomInput]= inputs[i].value;
     }  
         
     console.log(allData);
     if (allData === true){
         return formInfo
-    }      
-        
-   
+    }         
+}
+/* ------------------------Regroupement information formulaire pour envoie---------------------------------------------------*/
+function envoiFormulaire(info){
     
+    localStorage.setItem("contact", JSON.stringify(info));
+    let idProduct=JSON.parse(localStorage.getItem("panierLstorage"));
     
-   }
-    
-    function envoiFormulaire(info){
-        
-        localStorage.setItem("contact", JSON.stringify(info));
-        let idProduct=JSON.parse(localStorage.getItem("panierLstorage"));
-       
-        let product=[]
-        for (let i=0; i<idProduct.length; i++){
-           product.push(idProduct[i].idProduit);
-        }
-        console.log (product)
-   
-        const envoiFormulaire = {
+    let product=[]
+    for (let elem of idProduct){
+        product.push(elem.idProduit);
+    }
+    const eFormulaire = {
         contact : info,
         products : product
-    }
-    console.log(envoiFormulaire);
-    }
+    };
+
+        return  eFormulaire;
+}
+/* ------------------------envoie info Formulaire vers API, Reponse API---------------------------------------------------*/
+function findOrderId(eFormulaire){
+
+    fetch("http://localhost:3000/api/products/order",{
+        method: "POST",
+        body : JSON.stringify(eFormulaire),
+        headers:{
+                "Content-Type" : "application/JSON",
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let commandeId = data.orderId;
+        let urlPage = document.location.href;
+        let confirmationPage = urlPage.replace("cart.html","confirmation.html?orderId=") + commandeId;
+        window.location = confirmationPage;
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+}

@@ -44,7 +44,8 @@ function afficheElt(dataItem){
 
     let newImage = document.createElement("img");
     newImage.src = dataItem.imageUrl;
-
+    newImage.setAttribute("alt",dataItem.altTxt);
+    
     let newPetitTitre = document.createElement("h3");
     newPetitTitre.classList.add(".productName");
     newPetitTitre.textContent = dataItem.name;
@@ -61,43 +62,3 @@ function afficheElt(dataItem){
     
     getIdItems.append(newAncre);
 }
-
-
-
-
-
-
-/*AfficheElt()
- 
-  
-function AfficheElt(){
-
-
-maData.forEach(function(dataItem){
-    console.log(dataItem.imageUrl)
-
-let getIdItems = document.getElementById("items");
-let newAncre = document.createElement("a");
-let newArticle = document.createElement("article");
-
-let newImage = document.createElement("img");
-newImage.src = dataItem.imageUrl;
-
-let newPetitTitre = document.createElement("h3");
-newPetitTitre.classList.add(".productName");
-newPetitTitre.innerHTML = dataItem.name;
-
-let newPara = document.createElement("p");
-newPara.classList.add(".productDescription");
-newPara.innerHTML=dataItem.description;
-
-getIdItems.appendChild(newAncre);
-newAncre.appendChild(newArticle);
-newArticle.appendChild(newImage);
-newArticle.appendChild(newPetitTitre);
-newArticle.appendChild(newPara);
-
-})
-
-}
-*/
