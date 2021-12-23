@@ -2,9 +2,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     principale();
   });
 
-
-
- async function principale(){
+async function principale(){
     let apiUrl = "http://localhost:3000/api/products";
     const maData = await findElt(apiUrl);
     if("undefined"===typeof(maData.error)){
@@ -12,28 +10,23 @@ window.addEventListener("DOMContentLoaded", (event) => {
         maData.map(produit => { 
             afficheElt(produit);
         });
-        
     } else{
         console.log(maData.message);
     }
     console.log(maData);
-
  }
 
+async function findElt(apiUrl){
 
- async function findElt(apiUrl){
-    
    try { 
-
     const maReponse = await fetch(apiUrl);
     if(maReponse.ok){
      return maReponse.json();   
     }
-
-   } catch(e) {
+    }catch(e) {
        return {error: true, message: e};  
-   } 
- }
+    } 
+}
 
 function afficheElt(dataItem){
 
@@ -53,10 +46,6 @@ function afficheElt(dataItem){
     let newPara = document.createElement("p");
     newPara.classList.add(".productDescription");
     newPara.textContent=dataItem.description;
-
-    
-    
-
     newArticle.append(newImage, newPetitTitre, newPara);
     newAncre.append(newArticle);
     

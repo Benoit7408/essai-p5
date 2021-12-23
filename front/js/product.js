@@ -33,17 +33,14 @@ function findEltUrl(elt){
  async function fetchProduct(myProductUrl){
     
     try {
-
     const myProduct = await fetch(myProductUrl);
     console.log(myProduct);
-
     if(myProduct.ok){
         return myProduct.json();
     }
-
     } catch (e) {
         return {error: true, message: e}; 
-        }
+    }
 }
 
 /*------------------ fonction qui va afficher les éléments -------------------------*/
@@ -54,7 +51,7 @@ function afficheOneElement(monKanap){
 
     let imgProduct = document.createElement("img");
     imgProduct.src = monKanap.imageUrl;
-    imgProduct.setAttribute("alt",monKanap.altTxt)
+    imgProduct.setAttribute("alt",monKanap.altTxt);
     let nameProduct = document.getElementById("title");
     nameProduct.textContent= monKanap.name;
 
@@ -65,23 +62,21 @@ function afficheOneElement(monKanap){
     descriptProduct.textContent= monKanap.description;
     
     let quantiteElt = document.querySelector("#quantity");
-    quantiteElt.setAttribute("value", quantiteElt.min) 
+    quantiteElt.setAttribute("value", quantiteElt.min); 
 
     oneProduct.append(imgProduct); 
-    defaultQChange()
-    
+    defaultQChange();
 }
 
 function defaultQChange(){
     let quantiteElt = document.querySelector("#quantity");
-        quantiteElt.addEventListener("change",function (){
+    quantiteElt.addEventListener("change",function (){
         console.log(typeof quantiteElt.value)
         if (parseInt(quantiteElt.value) < 0 ){
             quantiteElt.value = quantiteElt.min
         }
-        quantiteElt.setAttribute("value", quantiteElt.value) 
-        });
-    }
+    });
+}
 /*------------------ fonction pour la proposition des options de couleur-------------------------*/
 
 function optionKanap(couleur){
@@ -106,13 +101,12 @@ function choixElementForOrder(monKanap){
         if (( choixQuantite <= 0) || (choixColors ==="")){
             window.alert ("vous devez choisir une quantité  et une couleur");   
         }else{
-
             let panier = {
             idProduit: monKanap._id,
             quantiteProduit: choixQuantite,
             couleurProduit: choixColors,
-            }
-            lStorage(panier)
+            };
+            lStorage(panier);
         }
     });
 }  
@@ -127,33 +121,31 @@ function lStorage(panier){
 
     if(eleInLstorage!==null){
 
-        console.log("le panier n'est pas vide")
-        let la__condition__est = false;
+        console.log("le panier n'est pas vide");
 
+        let la__condition__est = false;
         eleInLstorage.forEach(function boucle(elem__it){
             if (elem__it.idProduit == panier.idProduit && elem__it.couleurProduit == panier.couleurProduit){
-                elem__it.quantiteProduit = parseInt(panier.quantiteProduit) + parseInt(elem__it.quantiteProduit) ;
-                window.alert ("Votre produit est ajouté au panier")
-                console.log(typeof elem__it.quantiteProduit)
+                elem__it.quantiteProduit = parseInt(panier.quantiteProduit) + parseInt(elem__it.quantiteProduit);
+                window.alert ("Votre produit est ajouté au panier");
+                console.log(typeof elem__it.quantiteProduit);
                 la__condition__est =true;
-                console.log(`Des element identique dans le panier : ` + la__condition__est )
+                console.log(`Des element identique dans le panier : ` + la__condition__est );
             }
         });
-            
             if (!la__condition__est) {
                 eleInLstorage.push(panier);
-                console.log(eleInLstorage)
+                console.log(eleInLstorage);
                 window.alert ("Votre produit est ajouté au panier");
             }
-        
         localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
 
-        }else{
-            console.log("le panier est vide")
-            eleInLstorage = [];
-            eleInLstorage.push(panier);
-            localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
-            console.log(eleInLstorage);
-            window.alert ("Votre produit est ajouté au panier");
-        }  
-    } 
+    }else{
+        console.log("le panier est vide");
+        eleInLstorage = [];
+        eleInLstorage.push(panier);
+        localStorage.setItem("panierLstorage",JSON.stringify(eleInLstorage));
+        console.log(eleInLstorage);
+        window.alert ("Votre produit est ajouté au panier");
+    }  
+} 

@@ -11,6 +11,8 @@ function choixPage(){
         localStorage.clear();
         const orderConfirmation = document.getElementById("orderId");
         orderConfirmation.textContent = urlId;
+        orderConfirmation.style.backgroundColor = "green";
+        orderConfirmation.style.color ="black";
         return false;
     }
     else{
@@ -24,10 +26,10 @@ function cartPage(){
     
     let eleInLstorage = getStorage();
     if (eleInLstorage != null){
-        console.log(eleInLstorage)
+        console.log(eleInLstorage);
         eleInLstorage.map(produit => { 
             eleInLstorage__itere(produit);
-            console.table(produit)   
+            console.table(produit);  
         });
     } else {
         let panier = document.querySelector("#cart__items");
@@ -39,47 +41,45 @@ function cartPage(){
         panierVide.textContent= "Vous n'avez aucun articles dans le panier.";
         panier.append(panierVide);
     }
-
-    async function eleInLstorage__itere(eleInLstorage__itere){
-        
-        let apiUrl = `http://localhost:3000/api/products/`+ eleInLstorage__itere.idProduit ;
-        const maData = await findElt(apiUrl);
-        if("undefined"===typeof(maData.error)){
-            delete maData.colors;
-            maData["quantite"] = eleInLstorage__itere.quantiteProduit;
-            maData["couleur"] = eleInLstorage__itere.couleurProduit;
-            console.table(maData);
-            afficheCart(maData);
-            
-            
-        } else{
-            console.log(maData.message);
-        }
-
-    }
-
- async function findElt(apiUrl){
-    
-    try { 
- 
-     const maReponse = await fetch(apiUrl);
-     if(maReponse.ok){
-      return maReponse.json();   
-     }
- 
-    } catch(e) {
-        return {error: true, message: e};  
-    } 
-  }
-
 }
+async function eleInLstorage__itere(eleInLstorage__itere){
+    
+    let apiUrl = `http://localhost:3000/api/products/`+ eleInLstorage__itere.idProduit;
+    const maData = await findElt(apiUrl);
+    if("undefined"===typeof(maData.error)){
+        delete maData.colors;
+        maData["quantite"] = eleInLstorage__itere.quantiteProduit;
+        maData["couleur"] = eleInLstorage__itere.couleurProduit;
+        console.table(maData);
+        afficheCart(maData);
+        
+        
+    } else{
+        console.log(maData.message);
+    }
+}
+
+
+async function findElt(apiUrl){
+    
+    try{ 
+    const maReponse = await fetch(apiUrl);
+    if(maReponse.ok){
+        return maReponse.json();   
+    }
+ 
+    }catch(e){
+        return {error: true, message: e};  
+        } 
+}
+
 /* ------------------------Recupére informations du local storage---------------------------------------------------*/
 function getStorage(){
 
     let getStorage = JSON.parse(localStorage.getItem("panierLstorage"));
-        
         return getStorage;
 }
+
 /* ------------------------fonction d'affichage des articles du panier---------------------------------------------------*/
 function afficheCart (maData){
 
@@ -89,7 +89,7 @@ function afficheCart (maData){
     articlePanier.setAttribute("class","cart__item");
     articlePanier.setAttribute("data-id",maData._id);
     articlePanier.setAttribute("data-color",maData.couleur);
-
+    
     let divImagePanier = document.createElement("div");
     divImagePanier.setAttribute("class","cart__item__img");
 
@@ -129,26 +129,17 @@ function afficheCart (maData){
     settingInput.setAttribute("max","100");
     settingInput.setAttribute("value",maData.quantite);
     settingInput.unitPrice= maData.price;
-    settingInput.quantite= maData.quantite;
     settingInput.addEventListener("change", function(e){
-        changeQty(e,settingInput,maData._id,maData.couleur);
-        });
+        changeQty(e);
+    });
 
-        
-     
-        
     let div__settings__delete = document.createElement("div");
     div__settings__delete.setAttribute("class","cart__item__content__settings__delete");
-
     let settingInput__delete = document.createElement("p");
     settingInput__delete.setAttribute("class","deleteItem");
     settingInput__delete.textContent = "Supprimer";
     settingInput__delete.addEventListener("click", function(e){
-       
-        let produit = maData._id;
-        let couleur = maData.couleur;
-        del(produit,couleur);
-        location.reload();
+        del(e);
     });
 
     panier.append(articlePanier);
@@ -159,163 +150,220 @@ function afficheCart (maData){
     div__settings.append(div__settingsQuantity,div__settings__delete);
     div__settingsQuantity.append(settingPara,settingInput);
     div__settings__delete.append(settingInput__delete);
-    nombreArticle();
-    prixTotal() 
+    total();
 }
 /* -------------------Fonction pour changer la quantité d'un article du panier---------------------------------------------------*/
-function changeQty( e ,itemQuantity,idProduct,couleurProduct){
-    
-    if (isNaN(itemQuantity.value) || itemQuantity.value <= 0){
-        itemQuantity.value = itemQuantity.min
-        itemQuantity.setAttribute("value", itemQuantity.min) 
-    }
-    
-    let tabElmToChange = getStorage();
-    let produit = idProduct;
-    let couleur = couleurProduct;
-
-    for (let i = 0; i < tabElmToChange.length; i++){
-        if (produit === tabElmToChange[i].idProduit && couleur === tabElmToChange[i].couleurProduit){
-            
-                tabElmToChange[i].quantiteProduit= itemQuantity.value;
-                
-                console.log(itemQuantity.value);
-                console.log(tabElmToChange[i].quantiteProduit);
-                console.table(tabElmToChange); 
-        }
-        itemQuantity.setAttribute("value", itemQuantity.value)
-        console.log(tabElmToChange)
-        let eleInLstorage = localStorage.setItem("panierLstorage",JSON.stringify(tabElmToChange));
-    }
-
-    nombreArticle();
-    prixTotal();
+function changeQty(e){
    
+    let quantite = e.target;
+    console.log(quantite);
+    let produit = e.target.closest(".cart__item").getAttribute("data-id");
+    let couleur = e.target.closest(".cart__item").getAttribute("data-color");
+    let tabElmToChange = getStorage();
+    console.log (typeof tabElmToChange);
+
+    for (let i in tabElmToChange){
+        if (produit === tabElmToChange[i].idProduit && couleur === tabElmToChange[i].couleurProduit){
+            tabElmToChange[i].quantiteProduit= e.target.value;
+        }
+        
+    console.log(tabElmToChange);
+    quantite.setAttribute("value", e.target.value);
+    let eleInLstorage = localStorage.setItem("panierLstorage",JSON.stringify(tabElmToChange));    
+    }
+    total();
+}
+
+/* ------------------------Calcul du nombre d'article total dans le panier---------------------------------------------------*/
+function total(){
+
+    let totPrix = 0;
+    let nbArticle = 0;
+    let quantity = document.querySelectorAll(".itemQuantity");
+    let i = 0;
+    do {
+        console.log (i);
+        totPrix += parseInt(quantity[i].value) * quantity[i].unitPrice;
+        nbArticle = nbArticle + parseInt(quantity[i].value);
+        i++;
+        }while( i < (quantity.length ));
+
+    let totalPrice = document.querySelector("#totalPrice"); 
+    totalPrice.textContent = totPrix;
+    let totalArticles = document.querySelector("#totalQuantity");
+    totalArticles.textContent = nbArticle;
 }
 /* ------------------------fonction de supression d'article du panier---------------------------------------------------*/
-function del(produit,couleur){
-        
+function del(e){
+    
+    let idProduit = e.target.closest(".cart__item").getAttribute("data-id");
+    let couleur = e.target.closest(".cart__item").getAttribute("data-color");
+    let produit = e.target.closest(".cart__item");
+    
     let newOne = [];
     let tabElmToChange = getStorage();
     for (let i = 0; i < tabElmToChange.length; i++){
-        if (produit != tabElmToChange[i].idProduit || couleur != tabElmToChange[i].couleurProduit){
+        if (idProduit != tabElmToChange[i].idProduit || couleur != tabElmToChange[i].couleurProduit){
             newOne.push(tabElmToChange[i]);
         }
         localStorage.setItem("panierLstorage",JSON.stringify(newOne));
-    } 
+    }
+    produit.remove();
+    total();
     console.log(getStorage());
-    if(getStorage().length == 0) {
-        console.log("essai");
+    if(getStorage().length == 0){
         localStorage.removeItem("panierLstorage");
+        let panier = document.querySelector("#cart__items");
+        let panierVide = document.createElement("p");
+        panier.append(panierVide);
+        panierVide.textContent= "Vous n'avez aucun articles dans le panier.";
     }
 }
-/* ------------------------Calcul du nombre d'article total dans le panier---------------------------------------------------*/
-function nombreArticle(){
-    
-    let articles = document.querySelectorAll(".itemQuantity");
-    console.log(articles);
-    let NbArticles = 0;
-    for (let i = 0; i< articles.length; i++){
-        NbArticles = NbArticles +articles[i].valueAsNumber ;
-        console.log(NbArticles);
-    }
-    let totalArticles = document.querySelector("#totalQuantity") 
-    totalArticles.textContent = NbArticles;
-}
-/* ------------------------fonction de calcul de prix Total du panier---------------------------------------------------*/
-function prixTotal(){
-    
-    let prix = 0;
-    let quantity = document.querySelectorAll(".itemQuantity");
-    for (let i = 0 ; i<quantity.length; i++){
-        prix += parseInt(quantity[i].value) * quantity[i].unitPrice;
-    }
-    
-    let totalPrice = document.querySelector("#totalPrice"); 
-    totalPrice.textContent = prix;
-    }
-
-
 /* ------------------------Gestion du formulaire---------------------------------------------------*/
 function gestionFormulaire(){
 
-    document.getElementById("order").addEventListener("click", function(e){ 
-        e.preventDefault();
-        let contact = formulaire();
+    document.querySelector("form").setAttribute("novalidate", "");
+    listenInput();
+    document.querySelector("form").addEventListener("submit", function(e){ 
+    e.preventDefault();
+    allInputForm();
         if(JSON.parse(localStorage.getItem("panierLstorage"))!==null){
-            
-            if (contact !== false){
-                let eFormulaire = envoiFormulaire(contact);
+            if (infoInput()){
+                let eFormulaire = envoiFormulaire(infoInput());
                 findOrderId(eFormulaire);
             }
         }else{
-            window.alert ("Votre panier est vide, la commande ne peut être effectué");
-        }  
-    });
+                window.confirm ("Votre panier est vide, cette commande ne peut pas aboutir. Aller sur la page produit ?");
+            } 
+    },false);
+   
 }
 
-/* ------------------------Verification informations formulaire---------------------------------------------------*/
-function formulaire(){
+/* -----------------------------------------------------------------------------------------------------------------------------------------
+                    ---------------------Verification informations formulaire---------------------------------------------------*/
 
-    let inputs = document.querySelectorAll( "form input");
 
-    let formInfo = {};
-    const regex = /^[-a-zA-ZàâäçéèêëîïôöùûüÿæœÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃńǸǹN̂n̂N̈n̈ŅņNŇňṄṅNṆṇN̄n̄NÑñ.'"._\s]+$/
-    const regexAdresse = /[-a-z0-9àâäçéèêëîïôöùûüÿæœńǹn̂n̈ņňṅṇn̄ñ'"]{5,50}$|^[-A-Z0-9ÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃN̂N̈ŅNŇṄNṆN̄NÑ'"]{5,50}$|^[-A-Z0-9ÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃǸN̂N̈ŅNŇṄNṆN̄NÑ'"][-a-zàâäçéèêëîïôöùûüÿæœńǹn̂n̈ņňṅṇn̄ñ'"]*$/;
-    const regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$/;
-    var allData = true;
-    for (let i = 0; i<5; i++){
-        
-        if(inputs[i].value){
-            let nomInput = inputs[i].name +"ErrorMsg";
-            let noError = inputs[i].name +"ErrorMsg";
-            
-            if((!regex.test(inputs[i].value)) && ((inputs[i].name === "firstName") || (inputs[i].name === "lastName") || (inputs[i].name === "city")) ){
-                document.getElementById(nomInput).textContent = "une erreur de sasie";
-                allData = false;
-                break;
-            }else{
-                document.getElementById(noError).textContent = "";
-            } 
-            if((!regexAdresse.test(inputs[i].value)) && inputs[i].name === "address"){
-                document.getElementById(nomInput).textContent = "une erreur de sasie";
-                allData = false;
-                break;
-            }else{
-                document.getElementById(noError).textContent = "";
-            }
-            
-            if((!regexEmail.test(inputs[i].value)) && inputs[i].name === "email"){
-                document.getElementById(nomInput).textContent = "une erreur de sasie";
-                allData = false;
-                break;
-            }else{
-                document.getElementById(noError).textContent = "";
-            }
-            
-        }else{
-            let nomInput = inputs[i].name +"ErrorMsg";
-            document.getElementById(nomInput).textContent = "veuillez saisir les informations demandés ci-dessus";
-            allData = false;
+/*---------------Agir uniquement sur les inputs required---------------------------------*/
+function allInputForm(){
+
+let inputRequired = document.querySelectorAll("input");
+    inputRequired.forEach(function(eleInputRequired){
+        if (eleInputRequired.hasAttribute("required")){
+            checkInfo(eleInputRequired);
         }
-        let nomInput = inputs[i].name;
-        formInfo[nomInput]= inputs[i].value;
-    }  
-        
-    console.log(allData);
-    if (allData === true) {
-        return formInfo
+    });
+}
+/*---------------input vide ou écoute d'evenement de chaques champs--------------------------------*/
+function checkInfo(eleInputRequired){
+
+    let nameInputE = eleInputRequired.name + "ErrorMsg";
+    let errorMsg = document.getElementById(nameInputE);
+    let couleurErrorMsg = document.getElementById(eleInputRequired.name);
+
+    if (eleInputRequired.value === ""){
+        errorMsg.textContent = "Ce champ est obligatoire";
+        errorMsg.style.color = "black";
+        couleurErrorMsg.style.backgroundColor= "#B22B0B";
+        return false;
+    }
+    else{
+        listenInput();
+    }
+}
+/*---------------écoute d'évenement sur le focus et la sortit du focus, validation ou reset de l'input en fonction--------------------------------*/
+function listenInput(){
+
+    let inputRequired = document.querySelectorAll("input");     
+    inputRequired.forEach(function(eleInputRequired){
+
+        if (eleInputRequired.hasAttribute("required")){
+            eleInputRequired.addEventListener("focus",function (e){
+                resetInput(e);
+            });
+            eleInputRequired.addEventListener("blur",function (e){
+                validInput(e);
+                if (validInput(e)===true){
+                e.target.style.backgroundColor= "#70E77F";
+                }else{
+                e.target.style.backgroundColor= "#B22B0B";
+                }
+            });      
+        }
+    });
+}
+/*---------------Validation de l'input en sortie de focus , utilisation de regex--------------------------------*/
+function validInput(e){
+    let nameInputE = e.target.name + "ErrorMsg";
+    let errorMsg = document.getElementById(nameInputE);
+   
+    const regex1 = /^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$/;
+    const regexAdresse = /[-a-z0-9àâäçéèêëîïôöùûüÿæœńǹn̂n̈ņňṅṇn̄ñ'"]{5,50}$|[-A-Z0-9ÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃN̂N̈ŅNŇṄNṆN̄NÑ'"]{5,50}$|[-A-Z0-9ÀÂÄÇÉÈÊËÎÏÔÖÙÛÜŸÆŒŃǸN̂N̈ŅNŇṄNṆN̄NÑ'"][-a-zàâäçéèêëîïôöùûüÿæœńǹn̂n̈ņňṅṇn̄ñ'"]*$/;
+    const regexEmail = /^[a-zA-Z0-9._-]+@[a-z0-9.-]{2,}[.][a-z]{2,3}$/;
+    var control = false;
+
+    if(e){
+        if (((e.target.name === "firstName")||(e.target.name === "lastName") || (e.target.name === "city")) && (regex1.test(e.target.value))){
+            console.log(e.target.name)
+            errorMsg.textContent = "";
+            console.log((regex1.test(e.target.value))+ " nom");
+            return true;
+            
+        }
+        else if ((e.target.name == "address") && (regexAdresse.test(e.target.value))){
+            errorMsg.textContent = "";
+            console.log(e.target.name);
+            console.log((regexAdresse.test(e.target.value))+ " adresse");
+            return true;
+            }
+            
+       else if ((e.target.name === "email") && (regexEmail.test(e.target.value))){
+            errorMsg.textContent = "";
+            console.log(e.target.name);
+            console.log((regexEmail.test(e.target.value))+ " email");
+            return true;
+            }
     }else{
-        return false
-    }   
+        errorMsg.textContent = "Ce champ est obligatoire";
+        errorMsg.style.color = "black";
+        return false;
+    }
+    if(control === false){
+            errorMsg.textContent = "votre saisi est incorrecte";
+            console.log ("essai");
+            errorMsg.style.color = "black";
+            return false;
+    }
+}
+/*---------------reset du message d'erreur de l'input si il existe, en entrée du focus sur l'input--------------------------------*/
+function resetInput(e){
+
+    let nameInputE = e.target.name + "ErrorMsg";
+    let couleurErrorMsg= document.getElementById(e.target.name);
+    let errorMsg = document.getElementById(nameInputE);
+    couleurErrorMsg.style.backgroundColor= "white";
+    errorMsg.textContent = "";
+}
+/*---------------recupération des valeurs de form --------------------------------*/
+function infoInput(){
+
+    let form = document.querySelector("form");
+    let contact = new FormData(form);
+    let objContact ={};
+    console.log (contact);
+    for (let key of contact.keys()){
+        console.log (key);
+        objContact[key]=contact.get(key);
+    }
+    console.log (objContact);
+    return objContact
 }
 /* ------------------------Regroupement information formulaire pour envoie---------------------------------------------------*/
 function envoiFormulaire(info){
 
     localStorage.setItem("contact", JSON.stringify(info));
     let idProduct=JSON.parse(localStorage.getItem("panierLstorage"));
-    
-    let product=[]
+   
+    let product=[];
     for (let elem of idProduct){
         product.push(elem.idProduit);
     }
@@ -323,7 +371,7 @@ function envoiFormulaire(info){
         contact : info,
         products : product
     };
-
+    console.table(eFormulaire);
         return  eFormulaire;
 }
 /* ------------------------envoie info Formulaire vers API, Reponse API---------------------------------------------------*/
@@ -345,5 +393,5 @@ function findOrderId(eFormulaire){
     })
     .catch((err) => {
         console.log(err);
-    })
+    });
 }
